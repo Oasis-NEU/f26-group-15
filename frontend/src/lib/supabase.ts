@@ -1,6 +1,12 @@
-import { createClient } from "@supabase/supabase-js";
+import { createClient, type SupabaseClient } from '@supabase/supabase-js'
 
-const supabase_url = import.meta.env.VITE_PUBLIC_SUPABASE_URL
-const supabase_public_key =  import.meta.env.VITE_PUBLIC_SUPABASE_PUBLISHABLE_KEY
+const url = import.meta.env.VITE_PUBLIC_SUPABASE_URL as string | undefined
+const key = import.meta.env.VITE_PUBLIC_SUPABASE_PUBLISHABLE_KEY as string | undefined
 
-export const supabase = createClient(supabase_url, supabase_public_key)
+/**
+ * Null when the env vars are missing. The app then runs without login,
+ * which keeps local development and the mock API usable without Supabase.
+ */
+export const supabase: SupabaseClient | null = url && key ? createClient(url, key) : null
+
+export const authEnabled = supabase !== null
